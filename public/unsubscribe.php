@@ -6,7 +6,7 @@ use App\Database;
 use App\Contact;
 
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/..');
-$dotenv->load();
+$dotenv->safeLoad();
 
 $token = $_GET['token'] ?? '';
 $pdo = Database::connect();

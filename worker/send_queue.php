@@ -11,7 +11,7 @@ use App\Mailer;
 use App\Template;
 
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/..');
-$dotenv->load();
+$dotenv->safeLoad();
 
 $pdo = Database::connect();
 $batchSize = (int)($_ENV['BATCH_SIZE'] ?? 25);

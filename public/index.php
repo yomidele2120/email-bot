@@ -6,7 +6,7 @@ use App\Contact;
 use App\Campaign;
 
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/..');
-$dotenv->load();
+$dotenv->safeLoad(); // won't error if .env is missing (e.g. on Railway, where vars come from the environment directly)
 
 $message = '';
 
