@@ -28,7 +28,38 @@ if (Auth::check()) {
     </a>
     <div class="landing-nav-links">
         <a href="#features">Features</a>
-        <a href="#tools">Tools</a>
+        <div class="nav-dropdown" id="toolsDropdown">
+            <button type="button" class="nav-dropdown-trigger" id="toolsTrigger">
+                Tools
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+            </button>
+            <div class="nav-dropdown-panel">
+                <a href="/register.php" class="nav-dropdown-item">
+                    <span class="ddi-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></span>
+                    <span><strong>QR Code Generator</strong><small>Turn links into scannable codes</small></span>
+                </a>
+                <a href="/register.php" class="nav-dropdown-item">
+                    <span class="ddi-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></span>
+                    <span><strong>URL Shortener</strong><small>Branded, trackable short links</small></span>
+                </a>
+                <a href="/register.php" class="nav-dropdown-item">
+                    <span class="ddi-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="M22 4 12 14.01l-3-3"/></svg></span>
+                    <span><strong>Email List Verifier</strong><small>Catch bad addresses before you send</small></span>
+                </a>
+                <a href="/register.php" class="nav-dropdown-item">
+                    <span class="ddi-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0-1 14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2L4 6"/></svg></span>
+                    <span><strong>Contact Cleanup</strong><small>Remove duplicates and invalid entries</small></span>
+                </a>
+                <div class="nav-dropdown-item disabled">
+                    <span class="ddi-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span>
+                    <span><strong>WhatsApp / SMS</strong><small>Coming soon</small></span>
+                </div>
+                <div class="nav-dropdown-item disabled">
+                    <span class="ddi-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/></svg></span>
+                    <span><strong>Invoice Generator</strong><small>Coming soon</small></span>
+                </div>
+            </div>
+        </div>
     </div>
     <div class="landing-nav-actions">
         <a href="/login.php" class="btn-secondary btn">Sign in</a>
@@ -43,6 +74,22 @@ if (Auth::check()) {
     <div class="hero-actions">
         <a href="/register.php" class="btn">Create free account</a>
         <a href="/login.php" class="btn btn-secondary">Sign in</a>
+    </div>
+
+    <div class="hero-scene" aria-hidden="true">
+        <div class="scene-ring"></div>
+        <div class="scene-envelope">
+            <svg width="88" height="64" viewBox="0 0 88 64" fill="none">
+                <rect x="2" y="2" width="84" height="60" rx="8" fill="#ffffff" stroke="#0969da" stroke-width="2.5"/>
+                <path d="M4 8 44 38 84 8" stroke="#0969da" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            </svg>
+        </div>
+        <div class="scene-particle p1"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0969da" stroke-width="2"><path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg></div>
+        <div class="scene-particle p2"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#C9A227" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M6 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/></svg></div>
+        <div class="scene-particle p3"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1a7f37" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg></div>
+        <div class="scene-particle p4"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0969da" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M6 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/></svg></div>
+        <div class="scene-particle p5"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1a7f37" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg></div>
+        <div class="scene-particle p6"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#C9A227" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg></div>
     </div>
 
     <div class="hero-mock mono">
@@ -102,6 +149,19 @@ if (Auth::check()) {
     <span>Email Bot</span>
     <span>Built for lists you actually own.</span>
 </footer>
+
+<script>
+// Tools dropdown: click to toggle (works on touch), closes on outside click
+const dd = document.getElementById('toolsDropdown');
+const trigger = document.getElementById('toolsTrigger');
+trigger.addEventListener('click', (e) => {
+    e.stopPropagation();
+    dd.classList.toggle('open');
+});
+document.addEventListener('click', (e) => {
+    if (!dd.contains(e.target)) dd.classList.remove('open');
+});
+</script>
 
 </body>
 </html>
