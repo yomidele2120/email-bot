@@ -34,7 +34,7 @@ require __DIR__ . '/../includes/header.php';
                 <td><?= htmlspecialchars($c['name'] ?: '—') ?></td>
                 <td>
                     <?php if ($c['unsubscribed']): ?>
-                        <span class="badge" style="background:rgba(193,85,75,0.12);color:#E39A93">Unsubscribed</span>
+                        <span class="badge badge-danger">Unsubscribed</span>
                     <?php else: ?>
                         <span class="badge badge-completed">Active</span>
                     <?php endif; ?>

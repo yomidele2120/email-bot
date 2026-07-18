@@ -3,14 +3,39 @@ namespace App;
 
 class ShortLink
 {
-    public static function create(int $userId, string $targetUrl): array
+    /**
+     * Create a short link. If $customSlug is provided, use it (validated + must be unique).
+     * Otherwise generate a random one.
+     */
+    public static function create(int $userId, string $targetUrl, string $customSlug = ''): array
     {
         if (!filter_var($targetUrl, FILTER_VALIDATE_URL)) {
             return ['success' => false, 'error' => 'Enter a valid URL, including https://'];
         }
 
         $pdo = Database::connect();
-        $slug = self::generateUniqueSlug($pdo);
+        $customSlug = trim($customSlug);
+
+        if ($customSlug !== '') {
+            if (!preg_match('/^[a-zA-Z0-9\-_]{3,20}$/', $customSlug)) {
+                return ['success' => false, 'error' => 'Custom name must be 3-20 characters: letters, numbers, - or _ only.'];
+            }
+
+            $reserved = ['login', 'register', 'logout', 'dashboard', 'campaigns', 'contacts', 'tools', 'settings', 'search', 'r'];
+            if (in_array(strtolower($customSlug), $reserved, true)) {
+                return ['success' => false, 'error' => 'That name is reserved, try another.'];
+            }
+
+            $stmt = $pdo->prepare("SELECT id FROM short_links WHERE slug = :slug");
+            $stmt->execute([':slug' => $customSlug]);
+            if ($stmt->fetch()) {
+                return ['success' => false, 'error' => 'That custom name is already taken.'];
+            }
+
+            $slug = $customSlug;
+        } else {
+            $slug = self::generateUniqueSlug($pdo);
+        }
 
         $stmt = $pdo->prepare(
             "INSERT INTO short_links (user_id, slug, target_url) VALUES (:user_id, :slug, :url)"

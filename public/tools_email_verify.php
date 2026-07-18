@@ -57,7 +57,7 @@ require __DIR__ . '/../includes/header.php';
                     <?php if ($r['valid']): ?>
                         <span class="badge badge-completed">Valid</span>
                     <?php else: ?>
-                        <span class="badge" style="background:rgba(193,85,75,0.12);color:#E39A93">Invalid</span>
+                        <span class="badge badge-danger">Invalid</span>
                     <?php endif; ?>
                 </td>
                 <td style="color:var(--text-muted)"><?= htmlspecialchars($r['reason']) ?></td>
