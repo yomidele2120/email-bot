@@ -2,16 +2,10 @@
 namespace App;
 
 use League\Csv\Reader;
-use PDO;
 
 class Contact
 {
-    /**
-     * Import contacts from an uploaded CSV file.
-     * Expected columns: email, name, plus any extra columns become custom_fields.
-     * Returns [imported => int, skipped => int]
-     */
-    public static function importFromCsv(string $filePath): array
+    public static function importFromCsv(string $filePath, int $userId): array
     {
         $pdo = Database::connect();
         $csv = Reader::createFromPath($filePath, 'r');
@@ -21,8 +15,8 @@ class Contact
         $skipped = 0;
 
         $stmt = $pdo->prepare(
-            "INSERT INTO contacts (email, name, custom_fields)
-             VALUES (:email, :name, :custom_fields)
+            "INSERT INTO contacts (user_id, email, name, custom_fields)
+             VALUES (:user_id, :email, :name, :custom_fields)
              ON DUPLICATE KEY UPDATE name = VALUES(name), custom_fields = VALUES(custom_fields)"
         );
 
@@ -38,6 +32,7 @@ class Contact
             unset($customFields['email'], $customFields['name']);
 
             $stmt->execute([
+                ':user_id' => $userId,
                 ':email' => $email,
                 ':name' => $name,
                 ':custom_fields' => json_encode($customFields),
@@ -48,11 +43,28 @@ class Contact
         return ['imported' => $imported, 'skipped' => $skipped];
     }
 
-    public static function allActive(): array
+    public static function allActive(int $userId): array
     {
         $pdo = Database::connect();
-        $stmt = $pdo->query("SELECT * FROM contacts WHERE unsubscribed = 0");
+        $stmt = $pdo->prepare("SELECT * FROM contacts WHERE user_id = :user_id AND unsubscribed = 0");
+        $stmt->execute([':user_id' => $userId]);
         return $stmt->fetchAll();
+    }
+
+    public static function allForUser(int $userId): array
+    {
+        $pdo = Database::connect();
+        $stmt = $pdo->prepare("SELECT * FROM contacts WHERE user_id = :user_id ORDER BY created_at DESC");
+        $stmt->execute([':user_id' => $userId]);
+        return $stmt->fetchAll();
+    }
+
+    public static function countForUser(int $userId): int
+    {
+        $pdo = Database::connect();
+        $stmt = $pdo->prepare("SELECT COUNT(*) FROM contacts WHERE user_id = :user_id");
+        $stmt->execute([':user_id' => $userId]);
+        return (int)$stmt->fetchColumn();
     }
 
     public static function unsubscribe(int $contactId): void

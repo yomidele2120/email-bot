@@ -1,7 +1,15 @@
 # Email Bot
 
-PHP email marketing automation. Upload a contact CSV + HTML template, it queues
-and sends personalized emails through SendGrid in rate-limited batches.
+PHP email marketing automation with accounts, a dashboard, and campaign tracking.
+Upload a contact CSV + HTML template, it queues and sends personalized emails
+through SendGrid in rate-limited batches.
+
+## What's new in this version
+- User accounts (register/login), each account's contacts and campaigns are private to them
+- A dashboard with stats (contacts, campaigns, emails sent)
+- A campaigns list showing status and send progress
+- A contacts list
+- Redesigned UI (dark charcoal/gold theme) across every page
 
 ## Local setup
 
@@ -19,6 +27,12 @@ To test the sender manually:
 ```bash
 php worker/send_queue.php
 ```
+
+## Upgrading from the old single-page version
+If you already have the old version deployed, run migration 002 to add
+accounts (Step 3 in the Railway section below covers exactly how).
+Old contacts/campaigns will have no owner until you manually assign them,
+easiest is to just start fresh by re-uploading your CSV once logged in.
 
 ## Deploying to GitHub + Railway
 
