@@ -26,41 +26,7 @@ if (Auth::check()) {
             <rect x="5" y="7" width="14" height="10" rx="1.6" stroke="#14120F" stroke-width="1.6" fill="none"/>
         </svg>
     </a>
-    <div class="landing-nav-links">
-        <a href="#features">Features</a>
-        <div class="nav-dropdown" id="toolsDropdown">
-            <button type="button" class="nav-dropdown-trigger" id="toolsTrigger">
-                Tools
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
-            </button>
-            <div class="nav-dropdown-panel">
-                <a href="/register.php" class="nav-dropdown-item">
-                    <span class="ddi-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></span>
-                    <span><strong>QR Code Generator</strong><small>Turn links into scannable codes</small></span>
-                </a>
-                <a href="/register.php" class="nav-dropdown-item">
-                    <span class="ddi-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></span>
-                    <span><strong>URL Shortener</strong><small>Branded, trackable short links</small></span>
-                </a>
-                <a href="/register.php" class="nav-dropdown-item">
-                    <span class="ddi-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="M22 4 12 14.01l-3-3"/></svg></span>
-                    <span><strong>Email List Verifier</strong><small>Catch bad addresses before you send</small></span>
-                </a>
-                <a href="/register.php" class="nav-dropdown-item">
-                    <span class="ddi-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0-1 14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2L4 6"/></svg></span>
-                    <span><strong>Contact Cleanup</strong><small>Remove duplicates and invalid entries</small></span>
-                </a>
-                <div class="nav-dropdown-item disabled">
-                    <span class="ddi-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span>
-                    <span><strong>WhatsApp / SMS</strong><small>Coming soon</small></span>
-                </div>
-                <div class="nav-dropdown-item disabled">
-                    <span class="ddi-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/></svg></span>
-                    <span><strong>Invoice Generator</strong><small>Coming soon</small></span>
-                </div>
-            </div>
-        </div>
-    </div>
+    <?php require __DIR__ . '/../includes/tools_menu.php'; ?>
     <div class="landing-nav-actions">
         <a href="/login.php" class="btn-secondary btn">Sign in</a>
         <a href="/register.php" class="btn">Get started</a>
@@ -151,9 +117,9 @@ if (Auth::check()) {
 </footer>
 
 <script>
-// Tools dropdown: click to toggle (works on touch), closes on outside click
-const dd = document.getElementById('toolsDropdown');
-const trigger = document.getElementById('toolsTrigger');
+// Tools mega-dropdown: click to toggle (works on touch), closes on outside click
+const dd = document.getElementById('toolsMegaDropdown');
+const trigger = document.getElementById('toolsMegaTrigger');
 trigger.addEventListener('click', (e) => {
     e.stopPropagation();
     dd.classList.toggle('open');

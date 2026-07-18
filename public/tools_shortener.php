@@ -3,38 +3,47 @@ require __DIR__ . '/../includes/bootstrap.php';
 
 use App\Auth;
 use App\ShortLink;
+use App\TrialGate;
 
-Auth::requireLogin();
+$loggedIn = Auth::check();
 $userId = Auth::id();
 
 $message = '';
 $messageType = 'success';
+$showPaywall = false;
 $appUrl = rtrim($_ENV['APP_URL'] ?? '', '/');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $url = trim($_POST['target_url'] ?? '');
-    $customSlug = trim($_POST['custom_slug'] ?? '');
-    $result = ShortLink::create($userId, $url, $customSlug);
-
-    if ($result['success']) {
-        $shortUrl = $appUrl . '/' . $result['slug'];
-        $message = "Short link created: $shortUrl";
+    if (!TrialGate::check('shortener')) {
+        $showPaywall = true;
     } else {
-        $message = $result['error'];
-        $messageType = 'error';
+        $url = trim($_POST['target_url'] ?? '');
+        $customSlug = trim($_POST['custom_slug'] ?? '');
+        $result = ShortLink::create($userId, $url, $customSlug);
+
+        if ($result['success']) {
+            $shortUrl = $appUrl . '/' . $result['slug'];
+            $message = "Short link created: $shortUrl";
+        } else {
+            $message = $result['error'];
+            $messageType = 'error';
+        }
     }
 }
 
-$links = ShortLink::allForUser($userId);
+$links = $loggedIn ? ShortLink::allForUser($userId) : [];
 
 $pageTitle = 'URL Shortener';
 $activeNav = 'tools_shortener';
-require __DIR__ . '/../includes/header.php';
+require __DIR__ . '/../includes/' . ($loggedIn ? 'header.php' : 'public_header.php');
 ?>
 
-<p><a href="/tools.php" style="color:var(--text-muted);font-size:13px">← Tools</a></p>
+<?php if ($loggedIn): ?><p><a href="/tools.php" style="color:var(--text-muted);font-size:13px">← Tools</a></p><?php endif; ?>
 <h1>URL Shortener</h1>
 <p style="color:var(--text-muted)">Shorten links for campaigns, and see how many people click. Pick your own name, or let it generate one.</p>
+<?php if (!$loggedIn): ?>
+    <p style="color:var(--text-muted);font-size:13px">Free to try <strong class="mono"><?= TrialGate::usesLeft('shortener') ?></strong> more time(s) without an account. <a href="/register.php">Sign in</a> to see click history and manage your links.</p>
+<?php endif; ?>
 
 <?php if ($message): ?>
     <div class="alert alert-<?= $messageType ?>"><?= htmlspecialchars($message) ?></div>
@@ -53,27 +62,28 @@ require __DIR__ . '/../includes/header.php';
     <button type="submit">Create short link</button>
 </form>
 
-<h2 style="margin-top:36px">Your links</h2>
-
-<?php if (empty($links)): ?>
-    <div class="empty-state">
-        <h3>No short links yet</h3>
-        <p>Create one above to get started.</p>
-    </div>
-<?php else: ?>
-    <table>
-        <thead><tr><th>Short link</th><th>Destination</th><th>Clicks</th><th>Created</th></tr></thead>
-        <tbody>
-        <?php foreach ($links as $link): ?>
-            <tr>
-                <td class="mono"><a href="/<?= htmlspecialchars($link['slug']) ?>" target="_blank"><?= htmlspecialchars($appUrl . '/' . $link['slug']) ?></a></td>
-                <td style="max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"><?= htmlspecialchars($link['target_url']) ?></td>
-                <td class="mono"><?= $link['clicks'] ?></td>
-                <td style="color:var(--text-muted)"><?= date('M j, Y', strtotime($link['created_at'])) ?></td>
-            </tr>
-        <?php endforeach; ?>
-        </tbody>
-    </table>
+<?php if ($loggedIn): ?>
+    <h2 style="margin-top:36px">Your links</h2>
+    <?php if (empty($links)): ?>
+        <div class="empty-state">
+            <h3>No short links yet</h3>
+            <p>Create one above to get started.</p>
+        </div>
+    <?php else: ?>
+        <table>
+            <thead><tr><th>Short link</th><th>Destination</th><th>Clicks</th><th>Created</th></tr></thead>
+            <tbody>
+            <?php foreach ($links as $link): ?>
+                <tr>
+                    <td class="mono"><a href="/<?= htmlspecialchars($link['slug']) ?>" target="_blank"><?= htmlspecialchars($appUrl . '/' . $link['slug']) ?></a></td>
+                    <td style="max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"><?= htmlspecialchars($link['target_url']) ?></td>
+                    <td class="mono"><?= $link['clicks'] ?></td>
+                    <td style="color:var(--text-muted)"><?= date('M j, Y', strtotime($link['created_at'])) ?></td>
+                </tr>
+            <?php endforeach; ?>
+            </tbody>
+        </table>
+    <?php endif; ?>
 <?php endif; ?>
 
-<?php require __DIR__ . '/../includes/footer.php'; ?>
+<?php require __DIR__ . '/../includes/' . ($loggedIn ? 'footer.php' : 'public_footer.php'); ?>

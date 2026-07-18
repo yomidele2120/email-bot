@@ -3,3 +3,7 @@
 *.log
 uploads/*
 !uploads/.gitkeep
+public/downloads/*
+!public/downloads/.gitkeep
+public/uploads/shared/*
+!public/uploads/shared/.gitkeep

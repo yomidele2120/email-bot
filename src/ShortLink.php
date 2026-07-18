@@ -7,7 +7,7 @@ class ShortLink
      * Create a short link. If $customSlug is provided, use it (validated + must be unique).
      * Otherwise generate a random one.
      */
-    public static function create(int $userId, string $targetUrl, string $customSlug = ''): array
+    public static function create(?int $userId, string $targetUrl, string $customSlug = ''): array
     {
         if (!filter_var($targetUrl, FILTER_VALIDATE_URL)) {
             return ['success' => false, 'error' => 'Enter a valid URL, including https://'];

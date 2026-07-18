@@ -678,3 +678,129 @@ body.landing { overflow-x: hidden; background: var(--bg); }
 .account-dropdown-danger { color: var(--danger); }
 .account-dropdown-danger svg { color: var(--danger); }
 .account-dropdown-danger:hover { background: var(--danger-bg); }
+
+/* ===== Mega dropdown (nested category -> flyout) ===== */
+.mega-dropdown { position: relative; }
+
+.mega-dropdown-panel {
+    position: absolute;
+    top: calc(100% + 14px);
+    left: 50%;
+    transform: translateX(-50%) translateY(-6px);
+    width: 640px;
+    max-width: 90vw;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    box-shadow: 0 16px 40px rgba(140,149,159,0.28);
+    padding: 10px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.15s ease, transform 0.15s ease, visibility 0.15s;
+    z-index: 30;
+}
+
+.mega-dropdown.open .mega-dropdown-panel,
+.mega-dropdown:hover .mega-dropdown-panel {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);
+}
+
+.mega-category { position: relative; border-radius: 8px; }
+
+.mega-category-label {
+    display: block;
+    padding: 9px 10px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    border-radius: 6px;
+    cursor: default;
+}
+
+.mega-category:hover .mega-category-label,
+.mega-category:hover .mega-flyout { background: var(--surface); }
+.mega-category:hover .mega-flyout { display: flex; }
+
+.mega-flyout {
+    display: none;
+    flex-direction: column;
+    padding: 2px 6px 8px;
+    border-radius: 0 0 8px 8px;
+}
+
+.mega-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 7px 8px;
+    border-radius: 6px;
+    font-size: 13px;
+    color: var(--text);
+}
+
+.mega-item:hover { background: var(--surface-2); text-decoration: none; }
+.mega-item.disabled { color: var(--text-muted); cursor: default; }
+.mega-item.disabled:hover { background: none; }
+.mega-item em { font-style: normal; font-size: 10px; text-transform: uppercase; color: var(--text-muted); background: var(--surface-2); padding: 1px 6px; border-radius: 100px; }
+
+@media (max-width: 720px) {
+    .mega-dropdown-panel { grid-template-columns: 1fr; width: 280px; }
+    .mega-flyout { display: flex; }
+}
+
+/* ===== Signup paywall modal ===== */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(31,35,40,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s ease, visibility 0.2s;
+    z-index: 200;
+    padding: 20px;
+}
+
+.modal-overlay.open { opacity: 1; visibility: visible; }
+
+.modal-box {
+    background: var(--bg);
+    border-radius: 12px;
+    padding: 28px;
+    max-width: 380px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 24px 60px rgba(0,0,0,0.3);
+}
+
+.modal-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: #ddf4ff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 16px;
+}
+
+.modal-box h3 { font-size: 17px; }
+.modal-box p { color: var(--text-muted); font-size: 13px; margin-top: 6px; }
+.modal-actions { display: flex; flex-direction: column; gap: 8px; margin-top: 20px; }
+
+/* ===== Public (anonymous) tool page layout ===== */
+.public-tool-main {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 48px 24px 80px;
+    min-height: calc(100vh - 200px);
+}

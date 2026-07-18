@@ -2,29 +2,34 @@
 require __DIR__ . '/../includes/bootstrap.php';
 
 use App\Auth;
+use App\TrialGate;
 
-Auth::requireLogin();
-
+$loggedIn = Auth::check();
 $results = [];
+$showPaywall = false;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $raw = $_POST['emails'] ?? '';
-    $lines = array_filter(array_map('trim', preg_split('/[\r\n,]+/', $raw)));
+    if (!TrialGate::check('verify')) {
+        $showPaywall = true;
+    } else {
+        $raw = $_POST['emails'] ?? '';
+        $lines = array_filter(array_map('trim', preg_split('/[\r\n,]+/', $raw)));
 
-    foreach (array_unique($lines) as $email) {
-        $validSyntax = filter_var($email, FILTER_VALIDATE_EMAIL) !== false;
-        $hasMx = false;
+        foreach (array_unique($lines) as $email) {
+            $validSyntax = filter_var($email, FILTER_VALIDATE_EMAIL) !== false;
+            $hasMx = false;
 
-        if ($validSyntax) {
-            $domain = substr(strrchr($email, '@'), 1);
-            $hasMx = checkdnsrr($domain, 'MX') || checkdnsrr($domain, 'A');
+            if ($validSyntax) {
+                $domain = substr(strrchr($email, '@'), 1);
+                $hasMx = checkdnsrr($domain, 'MX') || checkdnsrr($domain, 'A');
+            }
+
+            $results[] = [
+                'email' => $email,
+                'valid' => $validSyntax && $hasMx,
+                'reason' => !$validSyntax ? 'Invalid format' : (!$hasMx ? 'Domain has no mail server' : 'Looks valid'),
+            ];
         }
-
-        $results[] = [
-            'email' => $email,
-            'valid' => $validSyntax && $hasMx,
-            'reason' => !$validSyntax ? 'Invalid format' : (!$hasMx ? 'Domain has no mail server' : 'Looks valid'),
-        ];
     }
 }
 
@@ -32,12 +37,15 @@ $validCount = count(array_filter($results, fn($r) => $r['valid']));
 
 $pageTitle = 'Email Verifier';
 $activeNav = 'tools_verify';
-require __DIR__ . '/../includes/header.php';
+require __DIR__ . '/../includes/' . ($loggedIn ? 'header.php' : 'public_header.php');
 ?>
 
-<p><a href="/tools.php" style="color:var(--text-muted);font-size:13px">← Tools</a></p>
+<?php if ($loggedIn): ?><p><a href="/tools.php" style="color:var(--text-muted);font-size:13px">← Tools</a></p><?php endif; ?>
 <h1>Email List Verifier</h1>
 <p style="color:var(--text-muted)">Paste emails, one per line or comma-separated. Checks format and whether the domain can actually receive mail.</p>
+<?php if (!$loggedIn): ?>
+    <p style="color:var(--text-muted);font-size:13px">Free to try <strong class="mono"><?= TrialGate::usesLeft('verify') ?></strong> more time(s) without an account.</p>
+<?php endif; ?>
 
 <form method="POST" style="max-width:520px">
     <label style="margin-top:20px">Emails</label>
@@ -67,4 +75,4 @@ require __DIR__ . '/../includes/header.php';
     </table>
 <?php endif; ?>
 
-<?php require __DIR__ . '/../includes/footer.php'; ?>
+<?php require __DIR__ . '/../includes/' . ($loggedIn ? 'footer.php' : 'public_footer.php'); ?>
