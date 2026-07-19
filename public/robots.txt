@@ -21,4 +21,4 @@ Disallow: /dl.php
 Disallow: /r.php
 Disallow: /trial_check.php
 
-Sitemap: https://YOUR-DOMAIN-HERE/sitemap.php
+Sitemap: https://email-bot-production-d655.up.railway.app/sitemap.php
