@@ -920,3 +920,63 @@ body.landing { overflow-x: hidden; background: var(--bg); }
 @media (max-width: 620px) {
     .trust-strip { gap: 14px 20px; }
 }
+
+/* ===== Tool page tab bar with share icons (ezyzip-style pattern, light theme) ===== */
+.tool-tab-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-bottom: none;
+    border-radius: 10px 10px 0 0;
+    padding: 10px 16px;
+    margin-bottom: -1px;
+}
+
+.tool-tab-active {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-bottom: none;
+    padding: 6px 14px;
+    border-radius: 8px 8px 0 0;
+    position: relative;
+    top: 1px;
+}
+
+.tool-share-icons { display: flex; gap: 6px; }
+
+.share-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.share-icon:hover { color: var(--accent); border-color: var(--accent); text-decoration: none; }
+
+.tool-tab-bar + h1 {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-top: none;
+    border-radius: 0 0 10px 10px;
+    padding: 16px 16px 4px;
+    margin-bottom: 0;
+}
+
+.tool-desc {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-top: none;
+    padding: 0 16px 16px;
+    margin-bottom: 20px;
+}

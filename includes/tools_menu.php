@@ -53,6 +53,13 @@
                 </div>
             </div>
             <div class="mega-category">
+                <span class="mega-category-label">Legal &amp; Docs</span>
+                <div class="mega-flyout">
+                    <a href="/tools_policy_generator.php" class="mega-item">Privacy Policy Generator</a>
+                    <a href="/tools_policy_generator.php" class="mega-item">Terms of Service Generator</a>
+                </div>
+            </div>
+            <div class="mega-category">
                 <span class="mega-category-label">Disc &amp; System Images</span>
                 <div class="mega-flyout">
                     <span class="mega-item disabled">Open ISO <em>Soon</em></span>

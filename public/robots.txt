@@ -1,0 +1,24 @@
+User-agent: *
+Allow: /
+Allow: /tools.php
+Allow: /tools_archive.php
+Allow: /tools_share.php
+Allow: /tools_qr.php
+Allow: /tools_shortener.php
+Allow: /tools_email_verify.php
+Allow: /tools_policy_generator.php
+Allow: /privacy.php
+Allow: /terms.php
+Disallow: /dashboard.php
+Disallow: /campaigns.php
+Disallow: /campaign_create.php
+Disallow: /contacts.php
+Disallow: /tools_contacts_clean.php
+Disallow: /settings.php
+Disallow: /search.php
+Disallow: /download_archive.php
+Disallow: /dl.php
+Disallow: /r.php
+Disallow: /trial_check.php
+
+Sitemap: https://YOUR-DOMAIN-HERE/sitemap.php

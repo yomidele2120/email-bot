@@ -87,8 +87,11 @@ require __DIR__ . '/../includes/' . ($loggedIn ? 'header.php' : 'public_header.p
 ?>
 
 <?php if ($loggedIn): ?><p><a href="/tools.php" style="color:var(--text-muted);font-size:13px">← Tools</a></p><?php endif; ?>
-<h1>Archive Converter</h1>
-<p style="color:var(--text-muted)">Upload a ZIP, TAR, TAR.GZ, or JAR file and get a clean ZIP back. Format: <strong><?= htmlspecialchars($modeLabel) ?></strong>.</p>
+<?php
+$toolTitle = 'Archive Converter';
+$toolDesc = 'Upload a ZIP, TAR, TAR.GZ, or JAR file and get a clean ZIP back. Format: <strong>' . htmlspecialchars($modeLabel) . '</strong>.';
+require __DIR__ . '/../includes/tool_header.php';
+?>
 <?php if (!$loggedIn): ?>
     <p style="color:var(--text-muted);font-size:13px">Free to try <strong class="mono"><?= TrialGate::usesLeft('archive') ?></strong> more time(s) without an account.</p>
 <?php endif; ?>

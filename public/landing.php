@@ -13,7 +13,37 @@ if (Auth::check()) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Email Bot — Campaigns that send themselves</title>
+    <title>Email Bot — Email Campaigns, QR Codes, URL Shortener & File Tools</title>
+    <meta name="description" content="Send personalized email campaigns with built-in unsubscribe compliance, plus free tools: QR code generator, URL shortener, email list verifier, archive/ZIP converter, and file sharing. Most tools work without an account.">
+    <meta name="keywords" content="email marketing automation, bulk email sender, email campaign tool, QR code generator, URL shortener, email verifier, ZIP converter, TAR to ZIP, file sharing tool, unsubscribe link generator">
+    <link rel="canonical" href="<?= htmlspecialchars(rtrim($_ENV['APP_URL'] ?? '', '/')) ?>/">
+
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Email Bot — Email Campaigns, QR Codes, URL Shortener & File Tools">
+    <meta property="og:description" content="Send personalized email campaigns with built-in unsubscribe compliance, plus free QR, URL shortener, email verifier, and file conversion tools.">
+    <meta property="og:url" content="<?= htmlspecialchars(rtrim($_ENV['APP_URL'] ?? '', '/')) ?>/">
+
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Email Bot — Email Campaigns, QR Codes, URL Shortener & File Tools">
+    <meta name="twitter:description" content="Send personalized email campaigns, plus free QR, URL shortener, email verifier, and file conversion tools.">
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Email Bot",
+        "url": "<?= htmlspecialchars(rtrim($_ENV['APP_URL'] ?? '', '/')) ?>/",
+        "applicationCategory": "BusinessApplication",
+        "operatingSystem": "Web",
+        "description": "Email campaign automation with personalized templates and built-in unsubscribe compliance, plus free tools for QR codes, URL shortening, email verification, and archive conversion.",
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+        }
+    }
+    </script>
+
     <link rel="stylesheet" href="/assets/style.css">
 </head>
 <body class="landing">
@@ -133,7 +163,10 @@ if (Auth::check()) {
 
 <footer class="landing-footer">
     <span>Email Bot</span>
-    <span>Built for lists you actually own.</span>
+    <span style="display:flex;gap:16px">
+        <a href="/privacy.php" style="color:var(--text-muted)">Privacy Policy</a>
+        <a href="/terms.php" style="color:var(--text-muted)">Terms of Service</a>
+    </span>
 </footer>
 
 <script>

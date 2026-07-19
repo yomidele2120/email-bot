@@ -41,8 +41,11 @@ require __DIR__ . '/../includes/' . ($loggedIn ? 'header.php' : 'public_header.p
 ?>
 
 <?php if ($loggedIn): ?><p><a href="/tools.php" style="color:var(--text-muted);font-size:13px">← Tools</a></p><?php endif; ?>
-<h1>Email List Verifier</h1>
-<p style="color:var(--text-muted)">Paste emails, one per line or comma-separated. Checks format and whether the domain can actually receive mail.</p>
+<?php
+$toolTitle = 'Email List Verifier';
+$toolDesc = 'Paste emails, one per line or comma-separated. Checks format and whether the domain can actually receive mail.';
+require __DIR__ . '/../includes/tool_header.php';
+?>
 <?php if (!$loggedIn): ?>
     <p style="color:var(--text-muted);font-size:13px">Free to try <strong class="mono"><?= TrialGate::usesLeft('verify') ?></strong> more time(s) without an account.</p>
 <?php endif; ?>

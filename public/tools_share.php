@@ -50,8 +50,11 @@ require __DIR__ . '/../includes/' . ($loggedIn ? 'header.php' : 'public_header.p
 ?>
 
 <?php if ($loggedIn): ?><p><a href="/tools.php" style="color:var(--text-muted);font-size:13px">← Tools</a></p><?php endif; ?>
-<h1>Share Files</h1>
-<p style="color:var(--text-muted)">Upload a file, get a link anyone can use to download it. Expires automatically after 48 hours. Max 20MB.</p>
+<?php
+$toolTitle = 'Share Files';
+$toolDesc = 'Upload a file, get a link anyone can use to download it. Expires automatically after 48 hours. Max 20MB.';
+require __DIR__ . '/../includes/tool_header.php';
+?>
 <?php if (!$loggedIn): ?>
     <p style="color:var(--text-muted);font-size:13px">Free to try <strong class="mono"><?= TrialGate::usesLeft('share') ?></strong> more time(s) without an account.</p>
 <?php endif; ?>

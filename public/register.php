@@ -77,6 +77,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <button type="submit" style="width:100%">Create account</button>
             </form>
 
+            <p style="margin-top:12px;font-size:12px;color:var(--text-muted)">
+                By creating an account you agree to our <a href="/terms.php">Terms of Service</a> and <a href="/privacy.php">Privacy Policy</a>.
+            </p>
+
             <p style="margin-top:20px;font-size:13px;color:var(--text-muted)">
                 Already have an account? <a href="/login.php">Sign in</a>
             </p>

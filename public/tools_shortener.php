@@ -39,8 +39,11 @@ require __DIR__ . '/../includes/' . ($loggedIn ? 'header.php' : 'public_header.p
 ?>
 
 <?php if ($loggedIn): ?><p><a href="/tools.php" style="color:var(--text-muted);font-size:13px">← Tools</a></p><?php endif; ?>
-<h1>URL Shortener</h1>
-<p style="color:var(--text-muted)">Shorten links for campaigns, and see how many people click. Pick your own name, or let it generate one.</p>
+<?php
+$toolTitle = 'URL Shortener';
+$toolDesc = 'Shorten links for campaigns, and see how many people click. Pick your own name, or let it generate one.';
+require __DIR__ . '/../includes/tool_header.php';
+?>
 <?php if (!$loggedIn): ?>
     <p style="color:var(--text-muted);font-size:13px">Free to try <strong class="mono"><?= TrialGate::usesLeft('shortener') ?></strong> more time(s) without an account. <a href="/register.php">Sign in</a> to see click history and manage your links.</p>
 <?php endif; ?>

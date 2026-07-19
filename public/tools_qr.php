@@ -12,8 +12,11 @@ require __DIR__ . '/../includes/' . ($loggedIn ? 'header.php' : 'public_header.p
 ?>
 
 <?php if ($loggedIn): ?><p><a href="/tools.php" style="color:var(--text-muted);font-size:13px">← Tools</a></p><?php endif; ?>
-<h1>QR Code Generator</h1>
-<p style="color:var(--text-muted)">Paste a link, get a QR code you can download.</p>
+<?php
+$toolTitle = 'QR Code Generator';
+$toolDesc = 'Paste a link, get a QR code you can download.';
+require __DIR__ . '/../includes/tool_header.php';
+?>
 <?php if (!$loggedIn): ?>
     <p style="color:var(--text-muted);font-size:13px">Free to try <strong class="mono"><?= TrialGate::usesLeft('qr') ?></strong> more time(s) without an account.</p>
 <?php endif; ?>
