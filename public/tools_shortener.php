@@ -49,7 +49,7 @@ require __DIR__ . '/../includes/' . ($loggedIn ? 'header.php' : 'public_header.p
     <div class="alert alert-<?= $messageType ?>"><?= htmlspecialchars($message) ?></div>
 <?php endif; ?>
 
-<form method="POST" style="max-width:480px">
+<form method="POST" class="tool-panel" style="max-width:480px">
     <label style="margin-top:0">Long URL</label>
     <input type="text" name="target_url" placeholder="https://example.com/a-very-long-link" required>
 

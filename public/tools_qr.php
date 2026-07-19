@@ -18,10 +18,10 @@ require __DIR__ . '/../includes/' . ($loggedIn ? 'header.php' : 'public_header.p
     <p style="color:var(--text-muted);font-size:13px">Free to try <strong class="mono"><?= TrialGate::usesLeft('qr') ?></strong> more time(s) without an account.</p>
 <?php endif; ?>
 
-<div style="max-width:420px;margin-top:24px">
+<div class="tool-panel" style="max-width:420px;margin-top:24px">
     <label>Link or text</label>
     <input type="text" id="qr-input" placeholder="https://example.com">
-    <button type="button" id="qr-generate">Generate QR code</button>
+    <button type="button" id="qr-generate" class="btn" style="width:100%">Generate QR code</button>
 
     <div id="qr-result" style="margin-top:24px;display:none;text-align:center">
         <div id="qr-canvas-wrap" style="background:#fff;display:inline-block;padding:16px;border-radius:var(--radius);border:1px solid var(--border)"></div>
@@ -31,9 +31,8 @@ require __DIR__ . '/../includes/' . ($loggedIn ? 'header.php' : 'public_header.p
     </div>
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
 <script>
-let qr = null;
 document.getElementById('qr-generate').addEventListener('click', async () => {
     const value = document.getElementById('qr-input').value.trim();
     if (!value) return;
@@ -42,18 +41,19 @@ document.getElementById('qr-generate').addEventListener('click', async () => {
     const data = await res.json();
     if (!data.allowed) { openPaywall(); return; }
 
+    // typeNumber 0 = auto-detect the smallest QR version that fits the data.
+    // Error correction level 'M' (15% recovery) is the standard default for scannability.
+    const qr = qrcode(0, 'M');
+    qr.addData(value);
+    qr.make();
+
+    // cellSize 6, margin 16 -> a proper quiet zone around the code, which scanners rely on
+    const dataUrl = qr.createDataURL(6, 16);
+
     const wrap = document.getElementById('qr-canvas-wrap');
-    wrap.innerHTML = '';
-    qr = new QRCode(wrap, { text: value, width: 220, height: 220, colorDark: '#14120F', colorLight: '#ffffff' });
-
+    wrap.innerHTML = '<img src="' + dataUrl + '" width="220" height="220" alt="QR code">';
+    document.getElementById('qr-download').href = dataUrl;
     document.getElementById('qr-result').style.display = 'block';
-
-    setTimeout(() => {
-        const canvas = wrap.querySelector('canvas');
-        if (canvas) {
-            document.getElementById('qr-download').href = canvas.toDataURL('image/png');
-        }
-    }, 150);
 });
 
 document.getElementById('qr-input').addEventListener('keydown', (e) => {

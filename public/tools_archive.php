@@ -12,6 +12,7 @@ $modeLabel = $labels[$mode] ?? 'Archive';
 $message = '';
 $messageType = 'error';
 $downloadUrl = '';
+$downloadName = '';
 $showPaywall = false;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_FILES['archive']['tmp_name'])) {
@@ -71,6 +72,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_FILES['archive']['tmp_name
 
             $_SESSION['archive_downloads'][$token] = ['name' => $outputName, 'expires' => time() + 600];
             $downloadUrl = '/download_archive.php?t=' . $token;
+            $downloadName = $outputName;
             $message = 'Converted successfully. Your download is ready.';
             $messageType = 'success';
         } catch (Exception $e) {
@@ -86,7 +88,7 @@ require __DIR__ . '/../includes/' . ($loggedIn ? 'header.php' : 'public_header.p
 
 <?php if ($loggedIn): ?><p><a href="/tools.php" style="color:var(--text-muted);font-size:13px">← Tools</a></p><?php endif; ?>
 <h1>Archive Converter</h1>
-<p style="color:var(--text-muted)">Upload a ZIP, TAR, TAR.GZ, or JAR file and get a clean ZIP back. Handles the format you selected: <strong><?= htmlspecialchars($modeLabel) ?></strong>.</p>
+<p style="color:var(--text-muted)">Upload a ZIP, TAR, TAR.GZ, or JAR file and get a clean ZIP back. Format: <strong><?= htmlspecialchars($modeLabel) ?></strong>.</p>
 <?php if (!$loggedIn): ?>
     <p style="color:var(--text-muted);font-size:13px">Free to try <strong class="mono"><?= TrialGate::usesLeft('archive') ?></strong> more time(s) without an account.</p>
 <?php endif; ?>
@@ -94,16 +96,80 @@ require __DIR__ . '/../includes/' . ($loggedIn ? 'header.php' : 'public_header.p
 <?php if ($message): ?>
     <div class="alert alert-<?= $messageType ?>">
         <?= htmlspecialchars($message) ?>
-        <?php if ($downloadUrl): ?> <a href="<?= htmlspecialchars($downloadUrl) ?>">Download ZIP</a><?php endif; ?>
     </div>
 <?php endif; ?>
 
-<form method="POST" enctype="multipart/form-data" style="max-width:440px">
-    <label style="margin-top:0">Archive file</label>
-    <input type="file" name="archive" accept=".zip,.tar,.tar.gz,.tgz,.jar" required>
-    <button type="submit">Convert</button>
+<?php if ($downloadUrl): ?>
+    <div class="result-panel">
+        <div class="result-panel-icon">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#1a7f37" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>
+        </div>
+        <div class="result-panel-info">
+            <strong><?= htmlspecialchars($downloadName) ?></strong>
+            <span>Ready to save</span>
+        </div>
+        <button type="button" class="btn" style="margin:0" onclick="downloadWithPicker('<?= htmlspecialchars($downloadUrl) ?>', '<?= htmlspecialchars($downloadName) ?>')">Choose folder &amp; save</button>
+    </div>
+<?php endif; ?>
+
+<form method="POST" enctype="multipart/form-data" id="archiveForm">
+    <label class="dropzone" for="archiveInput" id="archiveDropzone">
+        <input type="file" name="archive" id="archiveInput" accept=".zip,.tar,.tar.gz,.tgz,.jar" required hidden>
+        <div class="dropzone-icon">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M17 8l-5-5-5 5"/><path d="M12 3v12"/></svg>
+        </div>
+        <div class="dropzone-text">
+            <strong id="dropzoneLabel">Select a file to convert</strong>
+            <span>or drag and drop it here — ZIP, TAR, TAR.GZ, JAR</span>
+        </div>
+    </label>
+    <button type="submit" class="btn" style="width:100%">Convert now</button>
 </form>
 
 <p style="margin-top:24px;font-size:12px;color:var(--text-muted)">RAR, 7Z, and other formats aren't supported yet, those need extra system tools we haven't wired up. This handles ZIP, TAR, TAR.GZ, and JAR.</p>
+
+<script>
+const dz = document.getElementById('archiveDropzone');
+const input = document.getElementById('archiveInput');
+const label = document.getElementById('dropzoneLabel');
+
+input.addEventListener('change', () => {
+    if (input.files[0]) label.textContent = input.files[0].name;
+});
+
+['dragover', 'dragenter'].forEach(evt => dz.addEventListener(evt, (e) => {
+    e.preventDefault();
+    dz.classList.add('dropzone-active');
+}));
+['dragleave', 'drop'].forEach(evt => dz.addEventListener(evt, (e) => {
+    e.preventDefault();
+    dz.classList.remove('dropzone-active');
+}));
+dz.addEventListener('drop', (e) => {
+    if (e.dataTransfer.files[0]) {
+        input.files = e.dataTransfer.files;
+        label.textContent = e.dataTransfer.files[0].name;
+    }
+});
+
+// Lets the browser prompt "choose folder / save as" instead of a silent auto-download,
+// in browsers that support the File System Access API (Chrome, Edge). Falls back to a
+// normal download elsewhere.
+async function downloadWithPicker(url, suggestedName) {
+    if (window.showSaveFilePicker) {
+        try {
+            const handle = await window.showSaveFilePicker({ suggestedName });
+            const writable = await handle.createWritable();
+            const resp = await fetch(url);
+            await writable.write(await resp.blob());
+            await writable.close();
+            return;
+        } catch (e) {
+            if (e.name === 'AbortError') return;
+        }
+    }
+    window.location.href = url;
+}
+</script>
 
 <?php require __DIR__ . '/../includes/' . ($loggedIn ? 'footer.php' : 'public_footer.php'); ?>

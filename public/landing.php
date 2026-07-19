@@ -44,8 +44,9 @@ if (Auth::check()) {
 
     <div class="hero-scene" aria-hidden="true">
         <div class="scene-ring"></div>
+        <div class="scene-ring-2"></div>
         <div class="scene-envelope">
-            <svg width="88" height="64" viewBox="0 0 88 64" fill="none">
+            <svg width="140" height="102" viewBox="0 0 88 64" fill="none">
                 <rect x="2" y="2" width="84" height="60" rx="8" fill="#ffffff" stroke="#0969da" stroke-width="2.5"/>
                 <path d="M4 8 44 38 84 8" stroke="#0969da" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
             </svg>
@@ -64,6 +65,25 @@ if (Auth::check()) {
         <div class="hero-mock-row"><span class="hero-mock-dim">→</span> Campaign #92 created and queued.</div>
         <div class="hero-mock-row"><span class="hero-mock-dim">worker</span> Sent to jane@company.com <span class="dot-inline"></span></div>
         <div class="hero-mock-row"><span class="hero-mock-dim">worker</span> Sent to marcus@studio.io <span class="dot-inline"></span></div>
+    </div>
+</section>
+
+<section class="trust-strip">
+    <div class="trust-item">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>
+        No credit card to start
+    </div>
+    <div class="trust-item">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>
+        Most tools work without signup
+    </div>
+    <div class="trust-item">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>
+        Unsubscribe link built into every send
+    </div>
+    <div class="trust-item">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>
+        Cancel anytime
     </div>
 </section>
 

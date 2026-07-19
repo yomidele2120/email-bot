@@ -57,16 +57,59 @@ require __DIR__ . '/../includes/' . ($loggedIn ? 'header.php' : 'public_header.p
 <?php endif; ?>
 
 <?php if ($message): ?>
-    <div class="alert alert-<?= $messageType ?>">
-        <?= htmlspecialchars($message) ?>
-        <?php if ($shareUrl): ?><br><a href="<?= htmlspecialchars($shareUrl) ?>" class="mono"><?= htmlspecialchars($shareUrl) ?></a><?php endif; ?>
+    <div class="alert alert-<?= $messageType ?>"><?= htmlspecialchars($message) ?></div>
+<?php endif; ?>
+
+<?php if ($shareUrl): ?>
+    <div class="result-panel">
+        <div class="result-panel-icon">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#1a7f37" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>
+        </div>
+        <div class="result-panel-info" style="min-width:0">
+            <strong class="mono" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block"><?= htmlspecialchars($shareUrl) ?></strong>
+            <span>Valid for 48 hours</span>
+        </div>
+        <button type="button" class="btn btn-secondary" style="margin:0" onclick="navigator.clipboard.writeText('<?= htmlspecialchars($shareUrl) ?>'); this.textContent='Copied!'">Copy link</button>
     </div>
 <?php endif; ?>
 
-<form method="POST" enctype="multipart/form-data" style="max-width:440px">
-    <label style="margin-top:0">File</label>
-    <input type="file" name="upload" required>
-    <button type="submit">Upload &amp; get link</button>
+<form method="POST" enctype="multipart/form-data">
+    <label class="dropzone" for="shareInput" id="shareDropzone">
+        <input type="file" name="upload" id="shareInput" required hidden>
+        <div class="dropzone-icon">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4z"/></svg>
+        </div>
+        <div class="dropzone-text">
+            <strong id="shareLabel">Select a file to share</strong>
+            <span>or drag and drop it here — up to 20MB</span>
+        </div>
+    </label>
+    <button type="submit" class="btn" style="width:100%">Upload &amp; get link</button>
 </form>
+
+<script>
+const dz2 = document.getElementById('shareDropzone');
+const input2 = document.getElementById('shareInput');
+const label2 = document.getElementById('shareLabel');
+
+input2.addEventListener('change', () => {
+    if (input2.files[0]) label2.textContent = input2.files[0].name;
+});
+
+['dragover', 'dragenter'].forEach(evt => dz2.addEventListener(evt, (e) => {
+    e.preventDefault();
+    dz2.classList.add('dropzone-active');
+}));
+['dragleave', 'drop'].forEach(evt => dz2.addEventListener(evt, (e) => {
+    e.preventDefault();
+    dz2.classList.remove('dropzone-active');
+}));
+dz2.addEventListener('drop', (e) => {
+    if (e.dataTransfer.files[0]) {
+        input2.files = e.dataTransfer.files;
+        label2.textContent = e.dataTransfer.files[0].name;
+    }
+});
+</script>
 
 <?php require __DIR__ . '/../includes/' . ($loggedIn ? 'footer.php' : 'public_footer.php'); ?>

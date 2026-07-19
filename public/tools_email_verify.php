@@ -47,7 +47,7 @@ require __DIR__ . '/../includes/' . ($loggedIn ? 'header.php' : 'public_header.p
     <p style="color:var(--text-muted);font-size:13px">Free to try <strong class="mono"><?= TrialGate::usesLeft('verify') ?></strong> more time(s) without an account.</p>
 <?php endif; ?>
 
-<form method="POST" style="max-width:520px">
+<form method="POST" class="tool-panel" style="max-width:520px">
     <label style="margin-top:20px">Emails</label>
     <textarea name="emails" rows="8" placeholder="jane@example.com&#10;john@company.com"><?= htmlspecialchars($_POST['emails'] ?? '') ?></textarea>
     <button type="submit">Verify</button>
