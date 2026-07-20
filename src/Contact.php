@@ -13,6 +13,7 @@ class Contact
 
         $imported = 0;
         $skipped = 0;
+        $importedEmails = [];
 
         $stmt = $pdo->prepare(
             "INSERT INTO contacts (user_id, email, name, custom_fields)
@@ -38,9 +39,26 @@ class Contact
                 ':custom_fields' => json_encode($customFields),
             ]);
             $imported++;
+            $importedEmails[] = $email;
         }
 
-        return ['imported' => $imported, 'skipped' => $skipped];
+        return ['imported' => $imported, 'skipped' => $skipped, 'emails' => $importedEmails];
+    }
+
+    /**
+     * Look up contact IDs for this user by email, used right after a CSV import
+     * to find out which contact_id each imported row landed on (new or existing).
+     */
+    public static function idsForEmails(int $userId, array $emails): array
+    {
+        if (empty($emails)) {
+            return [];
+        }
+        $pdo = Database::connect();
+        $placeholders = implode(',', array_fill(0, count($emails), '?'));
+        $stmt = $pdo->prepare("SELECT id FROM contacts WHERE user_id = ? AND email IN ($placeholders)");
+        $stmt->execute(array_merge([$userId], $emails));
+        return array_map('intval', array_column($stmt->fetchAll(), 'id'));
     }
 
     public static function allActive(int $userId): array
