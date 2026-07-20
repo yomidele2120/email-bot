@@ -719,8 +719,7 @@ body.landing { overflow-x: hidden; background: var(--bg); }
     z-index: 30;
 }
 
-.mega-dropdown.open .mega-dropdown-panel,
-.mega-dropdown:hover .mega-dropdown-panel {
+.mega-dropdown.open .mega-dropdown-panel {
     opacity: 1;
     visibility: visible;
     transform: translateX(-50%) translateY(0);
