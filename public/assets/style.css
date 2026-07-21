@@ -1123,3 +1123,7 @@ body.landing { overflow-x: hidden; background: var(--bg); }
 }
 
 .sequence-step-header strong { font-size: 13px; color: var(--text); }
+
+/* ===== Campaign detail: collapsible resend panel ===== */
+.resend-panel { display: none; }
+.resend-panel.open { display: block; }

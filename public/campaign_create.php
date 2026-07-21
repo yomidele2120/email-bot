@@ -138,6 +138,7 @@ require __DIR__ . '/../includes/header.php';
 
             <label>Or paste template HTML <span style="color:var(--text-muted);font-weight:400">(use {{name}}, {{email}}, {{unsubscribe_link}})</span></label>
             <textarea name="template_html" id="templateInput" rows="12" placeholder="<p>Hi {{name}}, ...</p>"></textarea>
+            <p style="font-size:13px;margin-top:8px">Don't know HTML? <a href="/tools_ai_template.php">Generate a template instead →</a></p>
         </div>
     </section>
 

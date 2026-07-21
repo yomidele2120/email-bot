@@ -30,7 +30,7 @@ require __DIR__ . '/../includes/header.php';
         <tbody>
         <?php foreach ($campaigns as $c): ?>
             <tr>
-                <td><?= htmlspecialchars($c['subject']) ?></td>
+                <td><a href="/campaign_view.php?id=<?= $c['id'] ?>"><?= htmlspecialchars($c['subject']) ?></a></td>
                 <td>
                     <?php if ($c['status'] === 'queued' && $c['sent_count'] > 0): ?>
                         <span class="badge badge-sending"><span class="dot"></span> Sending</span>

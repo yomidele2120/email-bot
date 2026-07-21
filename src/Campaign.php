@@ -3,6 +3,39 @@ namespace App;
 
 class Campaign
 {
+    public static function findForUser(int $campaignId, int $userId): ?array
+    {
+        $pdo = Database::connect();
+        $stmt = $pdo->prepare(
+            "SELECT c.*,
+                (SELECT COUNT(*) FROM campaign_queue q WHERE q.campaign_id = c.id) AS total_recipients,
+                (SELECT COUNT(*) FROM campaign_queue q WHERE q.campaign_id = c.id AND q.status = 'sent') AS sent_count,
+                (SELECT COUNT(*) FROM campaign_queue q WHERE q.campaign_id = c.id AND q.status = 'failed') AS failed_count
+             FROM campaigns c
+             WHERE c.id = :id AND c.user_id = :uid"
+        );
+        $stmt->execute([':id' => $campaignId, ':uid' => $userId]);
+        $row = $stmt->fetch();
+        return $row ?: null;
+    }
+
+    /**
+     * Every recipient row for a campaign, joined with contact info and per-send status.
+     */
+    public static function recipientsFor(int $campaignId): array
+    {
+        $pdo = Database::connect();
+        $stmt = $pdo->prepare(
+            "SELECT q.status, q.error_message, q.attempted_at, c.email, c.name
+             FROM campaign_queue q
+             JOIN contacts c ON c.id = q.contact_id
+             WHERE q.campaign_id = :id
+             ORDER BY q.id ASC"
+        );
+        $stmt->execute([':id' => $campaignId]);
+        return $stmt->fetchAll();
+    }
+
     public static function create(int $userId, string $subject, string $templateHtml, ?int $sequenceId = null): int
     {
         $pdo = Database::connect();

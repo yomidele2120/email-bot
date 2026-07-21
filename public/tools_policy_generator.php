@@ -64,19 +64,25 @@ You may not use {$siteName} to: violate any applicable law; infringe the intelle
 5. THIRD-PARTY SERVICES
 {$siteName} may rely on third-party providers, including {$thirdPartyList}, to operate. Your use of the service is also subject to those providers' own terms where applicable.
 
-6. TERMINATION
+6. INTELLECTUAL PROPERTY
+All content, branding, and technology that make up {$siteName} remain the property of its operators. You retain ownership of any content you submit through the service.
+
+7. TERMINATION
 We reserve the right to suspend or terminate access to {$siteName} for any user who violates these Terms.
 
-7. LIMITATION OF LIABILITY
+8. LIMITATION OF LIABILITY
 {$siteName} is provided "as is" without warranties of any kind. To the fullest extent permitted by law, {$siteName} and its operators are not liable for indirect, incidental, or consequential damages arising from use of the service.
 
-8. GOVERNING LAW
+9. INDEMNIFICATION
+You agree to indemnify and hold {$siteName} harmless from any claims, damages, or expenses arising from your use of the service or violation of these Terms.
+
+10. GOVERNING LAW
 These Terms are governed by the laws applicable in {$country}, without regard to conflict of law principles.
 
-9. CHANGES TO THESE TERMS
+11. CHANGES TO THESE TERMS
 We may update these Terms from time to time. Continued use of {$siteName} after changes constitutes acceptance of the revised Terms.
 
-10. CONTACT
+12. CONTACT
 Questions about these Terms can be sent to {$contactEmail}.
 
 ---
@@ -113,10 +119,16 @@ Depending on your location, you may have rights to access, correct, delete, or e
 8. CHILDREN'S PRIVACY
 {$siteName} is not directed at children under 13 (or the minimum age required in your jurisdiction), and we do not knowingly collect data from children.
 
-9. CHANGES TO THIS POLICY
+9. SECURITY
+We take reasonable technical and organizational measures to protect your information against unauthorized access, alteration, or loss. No method of transmission or storage is 100% secure, and we cannot guarantee absolute security.
+
+10. INTERNATIONAL DATA TRANSFERS
+If {$siteName} operates across borders, your information may be transferred to and processed in countries other than your own. We take reasonable steps to ensure such transfers comply with applicable data protection law.
+
+11. CHANGES TO THIS POLICY
 We may update this Privacy Policy from time to time. Material changes will be reflected by an updated "Last updated" date above.
 
-10. CONTACT US
+12. CONTACT US
 For questions about this Privacy Policy, contact {$contactEmail}.
 
 ---

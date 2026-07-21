@@ -9,13 +9,31 @@ if (Auth::check()) {
 }
 
 $error = '';
+$siteKey = $_ENV['RECAPTCHA_SITE_KEY'] ?? '';
+$secretKey = $_ENV['RECAPTCHA_SECRET_KEY'] ?? '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = trim($_POST['email'] ?? '');
     $password = $_POST['password'] ?? '';
     $name = trim($_POST['name'] ?? '');
+    $captchaResponse = $_POST['g-recaptcha-response'] ?? '';
 
-    if (!filter_var($email, FILTER_VALIDATE_EMAIL) || !$name) {
+    $captchaOk = true;
+    if ($secretKey) {
+        $captchaOk = false;
+        if ($captchaResponse) {
+            $verify = file_get_contents('https://www.google.com/recaptcha/api/siteverify?' . http_build_query([
+                'secret' => $secretKey,
+                'response' => $captchaResponse,
+            ]));
+            $result = json_decode($verify, true);
+            $captchaOk = !empty($result['success']);
+        }
+    }
+
+    if (!$captchaOk) {
+        $error = 'Please complete the "I\'m not a robot" check.';
+    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL) || !$name) {
         $error = 'Enter a valid name and email address.';
     } else {
         $result = Auth::register($email, $password, $name);
@@ -34,6 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create account — Email Bot</title>
     <link rel="stylesheet" href="/assets/style.css">
+    <?php if ($siteKey): ?><script src="https://www.google.com/recaptcha/api.js" async defer></script><?php endif; ?>
 </head>
 <body>
 <div class="auth-split">
@@ -73,6 +92,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 <label>Password</label>
                 <input type="password" name="password" required minlength="8">
+
+                <?php if ($siteKey): ?>
+                    <div class="g-recaptcha" data-sitekey="<?= htmlspecialchars($siteKey) ?>" style="margin-top:16px"></div>
+                <?php endif; ?>
 
                 <button type="submit" style="width:100%">Create account</button>
             </form>
