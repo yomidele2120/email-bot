@@ -23,6 +23,7 @@
         <a href="/dashboard.php" class="<?= ($activeNav ?? '') === 'dashboard' ? 'active' : '' ?>">Overview</a>
         <a href="/campaigns.php" class="<?= ($activeNav ?? '') === 'campaigns' ? 'active' : '' ?>">Campaigns</a>
         <a href="/campaign_create.php" class="<?= ($activeNav ?? '') === 'new_campaign' ? 'active' : '' ?>">New Campaign</a>
+        <a href="/sequences.php" class="<?= ($activeNav ?? '') === 'sequences' ? 'active' : '' ?>">Sequences</a>
         <a href="/contacts.php" class="<?= ($activeNav ?? '') === 'contacts' ? 'active' : '' ?>">Contacts</a>
 
         <div class="sidebar-section">Tools</div>

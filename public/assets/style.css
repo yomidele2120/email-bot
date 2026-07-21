@@ -1106,3 +1106,20 @@ body.landing { overflow-x: hidden; background: var(--bg); }
     .builder-grid { grid-template-columns: 1fr; }
     .builder-sidebar { position: static; }
 }
+
+/* ===== Sequence step cards ===== */
+.sequence-step {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    margin-bottom: 14px;
+    background: var(--surface);
+}
+
+.sequence-step-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.sequence-step-header strong { font-size: 13px; color: var(--text); }

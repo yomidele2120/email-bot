@@ -3,14 +3,41 @@ namespace App;
 
 class Campaign
 {
-    public static function create(int $userId, string $subject, string $templateHtml): int
+    public static function create(int $userId, string $subject, string $templateHtml, ?int $sequenceId = null): int
     {
         $pdo = Database::connect();
         $stmt = $pdo->prepare(
-            "INSERT INTO campaigns (user_id, subject, template_html, status) VALUES (:user_id, :subject, :html, 'draft')"
+            "INSERT INTO campaigns (user_id, sequence_id, subject, template_html, status) VALUES (:user_id, :sequence_id, :subject, :html, 'draft')"
         );
-        $stmt->execute([':user_id' => $userId, ':subject' => $subject, ':html' => $templateHtml]);
+        $stmt->execute([':user_id' => $userId, ':sequence_id' => $sequenceId, ':subject' => $subject, ':html' => $templateHtml]);
         return (int)$pdo->lastInsertId();
+    }
+
+    /**
+     * Queue only the given contact IDs for this campaign, not the whole list.
+     * A contact that was uploaded/used in a past campaign is just as eligible
+     * here as a brand-new one, this only cares about the current selection.
+     */
+    public static function queueSelected(int $campaignId, array $contactIds): int
+    {
+        $pdo = Database::connect();
+        $contactIds = array_unique(array_map('intval', $contactIds));
+        if (empty($contactIds)) {
+            return 0;
+        }
+
+        $stmt = $pdo->prepare(
+            "INSERT IGNORE INTO campaign_queue (campaign_id, contact_id, status)
+             VALUES (:campaign_id, :contact_id, 'pending')"
+        );
+        foreach ($contactIds as $contactId) {
+            $stmt->execute([':campaign_id' => $campaignId, ':contact_id' => $contactId]);
+        }
+
+        $pdo->prepare("UPDATE campaigns SET status = 'queued' WHERE id = :id")
+            ->execute([':id' => $campaignId]);
+
+        return count($contactIds);
     }
 
     public static function queueAll(int $campaignId, int $userId): int
