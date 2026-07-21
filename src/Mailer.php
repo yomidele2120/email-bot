@@ -5,13 +5,21 @@ class Mailer
 {
     /**
      * Send a single email via the SendGrid API.
-     * Returns [success => bool, error => string|null]
+     * $fromName and $replyTo let each user's campaigns show their own name
+     * and reply address, even though the underlying authenticated "From" email
+     * stays fixed (that part can't be arbitrary, see note in Settings).
      */
-    public static function send(string $toEmail, string $toName, string $subject, string $htmlBody): array
-    {
+    public static function send(
+        string $toEmail,
+        string $toName,
+        string $subject,
+        string $htmlBody,
+        ?string $fromName = null,
+        ?string $replyTo = null
+    ): array {
         $apiKey = $_ENV['SENDGRID_API_KEY'];
         $fromEmail = $_ENV['FROM_EMAIL'];
-        $fromName = $_ENV['FROM_NAME'];
+        $fromName = $fromName ?: $_ENV['FROM_NAME'];
 
         $payload = [
             'personalizations' => [[
@@ -24,6 +32,10 @@ class Mailer
                 'value' => $htmlBody,
             ]],
         ];
+
+        if ($replyTo && filter_var($replyTo, FILTER_VALIDATE_EMAIL)) {
+            $payload['reply_to'] = ['email' => $replyTo, 'name' => $fromName];
+        }
 
         $ch = curl_init('https://api.sendgrid.com/v3/mail/send');
         curl_setopt_array($ch, [
@@ -46,7 +58,6 @@ class Mailer
             return ['success' => false, 'error' => $curlError];
         }
 
-        // SendGrid returns 202 on success with an empty body
         if ($httpCode === 202) {
             return ['success' => true, 'error' => null];
         }

@@ -20,10 +20,12 @@ $batchSize = (int)($_ENV['BATCH_SIZE'] ?? 25);
 $stmt = $pdo->prepare(
     "SELECT cq.id AS queue_id, cq.campaign_id, cq.contact_id,
             c.email, c.name, c.custom_fields,
-            camp.subject, camp.template_html
+            camp.subject, camp.template_html,
+            u.sender_name, u.reply_to_email, u.name AS owner_name, u.email AS owner_email
      FROM campaign_queue cq
      JOIN contacts c ON c.id = cq.contact_id
      JOIN campaigns camp ON camp.id = cq.campaign_id
+     JOIN users u ON u.id = camp.user_id
      WHERE cq.status = 'pending' AND c.unsubscribed = 0
      ORDER BY cq.id ASC
      LIMIT :limit"
@@ -52,7 +54,11 @@ foreach ($rows as $row) {
     $unsubscribeLink = rtrim($_ENV['APP_URL'], '/') . "/unsubscribe.php?token=$token";
     $html = Template::render($row['template_html'], $row, $unsubscribeLink);
 
-    $result = Mailer::send($row['email'], $row['name'], $row['subject'], $html);
+    // Fall back to the account's own name/email if they haven't set a custom sender identity
+    $fromName = $row['sender_name'] ?: $row['owner_name'];
+    $replyTo = $row['reply_to_email'] ?: $row['owner_email'];
+
+    $result = Mailer::send($row['email'], $row['name'], $row['subject'], $html, $fromName, $replyTo);
 
     if ($result['success']) {
         $pdo->prepare("UPDATE campaign_queue SET status='sent', attempted_at=NOW() WHERE id=:id")
