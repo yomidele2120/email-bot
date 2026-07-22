@@ -9,6 +9,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= isset($pageTitle) ? htmlspecialchars($pageTitle) . ' — ' : '' ?>Email Bot</title>
     <link rel="stylesheet" href="/assets/style.css">
+    <?php if (\App\Ads::enabledForCurrentUser()): ?>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=<?= htmlspecialchars(\App\Ads::clientId()) ?>" crossorigin="anonymous"></script>
+    <?php endif; ?>
 </head>
 <body>
 <div class="app-shell">
@@ -34,14 +37,17 @@
         <a href="/tools.php" class="<?= ($activeNav ?? '') === 'tools' ? 'active' : '' ?>">All Tools</a>
         <a href="/tools_qr.php" class="<?= ($activeNav ?? '') === 'tools_qr' ? 'active' : '' ?>">QR Generator</a>
         <a href="/tools_shortener.php" class="<?= ($activeNav ?? '') === 'tools_shortener' ? 'active' : '' ?>">URL Shortener</a>
+        <a href="/domains.php" class="<?= ($activeNav ?? '') === 'domains' ? 'active' : '' ?>">Custom Domain</a>
         <a href="/tools_email_verify.php" class="<?= ($activeNav ?? '') === 'tools_verify' ? 'active' : '' ?>">Email Verifier</a>
         <a href="/tools_contacts_clean.php" class="<?= ($activeNav ?? '') === 'tools_clean' ? 'active' : '' ?>">Contact Cleanup</a>
 
         <div class="sidebar-section">Account</div>
         <a href="/settings.php" class="<?= ($activeNav ?? '') === 'settings' ? 'active' : '' ?>">Settings</a>
+        <a href="/billing.php" class="<?= ($activeNav ?? '') === 'billing' ? 'active' : '' ?>">Billing</a>
 
         <div class="user-row">
             Signed in as <strong><?= htmlspecialchars(\App\Auth::name() ?? '') ?></strong><br>
+            <span style="color:var(--text-muted)">Plan: <?= htmlspecialchars(\App\Plan::label(\App\PlanGate::currentPlan(\App\Auth::id()))) ?></span> · <a href="/billing.php">Upgrade</a><br>
             <a href="/logout.php">Sign out</a>
         </div>
     </nav>
@@ -86,6 +92,10 @@
                             Tools
                         </a>
                         <div class="account-dropdown-divider"></div>
+                        <a href="/billing.php" class="account-dropdown-item">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+                            Billing
+                        </a>
                         <a href="/settings.php" class="account-dropdown-item">
                             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
                             Settings

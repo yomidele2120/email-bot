@@ -4,6 +4,7 @@ require __DIR__ . '/../includes/bootstrap.php';
 use App\Auth;
 use App\Campaign;
 use App\Contact;
+use App\PlanGate;
 
 Auth::requireLogin();
 $userId = Auth::id();
@@ -31,9 +32,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'resen
         $selectedIds = array_map('intval', array_column($stmt->fetchAll(), 'contact_id'));
     }
 
-    if (!empty($selectedIds)) {
+    if (!empty($selectedIds) && !PlanGate::canSendEmails($userId, count($selectedIds))) {
+        $remaining = PlanGate::emailsRemainingThisMonth($userId);
+        $message = "Resending to " . count($selectedIds) . " contacts would exceed your plan's monthly email limit (you have $remaining left this month). Upgrade your plan on the Billing page to resend to everyone.";
+    } elseif (!empty($selectedIds)) {
         $newId = Campaign::create($userId, $campaign['subject'], $campaign['template_html']);
         $count = Campaign::queueSelected($newId, $selectedIds);
+        PlanGate::recordEmailsSent($userId, $count);
         header("Location: /campaign_view.php?id=$newId&resent=$count");
         exit;
     }
@@ -52,6 +57,9 @@ require __DIR__ . '/../includes/header.php';
 
 <?php if ($resentCount !== null): ?>
     <div class="alert alert-success">Resent as a new campaign, queued for <?= $resentCount ?> contact(s).</div>
+<?php endif; ?>
+<?php if ($message): ?>
+    <div class="alert alert-error"><?= htmlspecialchars($message) ?></div>
 <?php endif; ?>
 
 <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:20px;flex-wrap:wrap">

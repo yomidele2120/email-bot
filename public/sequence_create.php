@@ -4,6 +4,7 @@ require __DIR__ . '/../includes/bootstrap.php';
 use App\Auth;
 use App\Contact;
 use App\Sequence;
+use App\PlanGate;
 
 Auth::requireLogin();
 $userId = Auth::id();
@@ -54,6 +55,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $message .= 'Select at least one contact, or upload a CSV.';
     } elseif (count($steps) < 2) {
         $message .= 'Add at least 2 different messages, that\'s the whole point of a rotation.';
+    } elseif (!PlanGate::canCreateSequence($userId)) {
+        $message .= 'Your plan only allows ' . PlanGate::limits($userId)['sequences'] . ' active sequence(s). Upgrade on the Billing page to create more.';
     } else {
         $sequenceId = Sequence::create($userId, $name, $intervalDays, $selectedIds, $steps);
         header('Location: /sequences.php?created=1');

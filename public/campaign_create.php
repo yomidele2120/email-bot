@@ -4,6 +4,7 @@ require __DIR__ . '/../includes/bootstrap.php';
 use App\Auth;
 use App\Contact;
 use App\Campaign;
+use App\PlanGate;
 
 Auth::requireLogin();
 $userId = Auth::id();
@@ -16,6 +17,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (!empty($_FILES['contacts_csv']['tmp_name'])) {
         $result = Contact::importFromCsv($_FILES['contacts_csv']['tmp_name'], $userId);
+        if (!PlanGate::canAddContacts($userId, $result['imported'])) {
+            $message .= "Your plan's contact limit was reached, so some imported rows may exceed it. Upgrade on the Billing page to keep them all. ";
+        }
         $message .= "Imported {$result['imported']} contacts, skipped {$result['skipped']} invalid rows. ";
         $importedIds = Contact::idsForEmails($userId, $result['emails']);
         $selectedIds = array_merge($selectedIds, $importedIds);
@@ -37,9 +41,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } elseif (!$templateHtml || !$subject) {
         $message .= 'A subject and a template are both required.';
         $messageType = 'error';
+    } elseif (!PlanGate::canSendEmails($userId, count($selectedIds))) {
+        $remaining = PlanGate::emailsRemainingThisMonth($userId);
+        $message .= "Sending to " . count($selectedIds) . " contacts would exceed your plan's monthly email limit (you have $remaining left this month). Upgrade your plan on the Billing page to send to everyone.";
+        $messageType = 'error';
     } else {
         $campaignId = Campaign::create($userId, $subject, $templateHtml);
         $count = Campaign::queueSelected($campaignId, $selectedIds);
+        PlanGate::recordEmailsSent($userId, $count);
         $message .= "Campaign created and queued for $count contact(s). It'll go out in batches shortly.";
     }
 }

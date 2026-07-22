@@ -23,3 +23,4 @@ $encodedUrl = urlencode($currentUrl);
 </div>
 <h1><?= htmlspecialchars($toolTitle) ?></h1>
 <?php if (!empty($toolDesc)): ?><p class="tool-desc" style="color:var(--text-muted)"><?= $toolDesc ?></p><?php endif; ?>
+<?php require __DIR__ . '/ads.php'; ?>

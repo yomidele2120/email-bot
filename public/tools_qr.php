@@ -3,8 +3,14 @@ require __DIR__ . '/../includes/bootstrap.php';
 
 use App\Auth;
 use App\TrialGate;
+use App\PlanGate;
+use App\Plan;
 
 $loggedIn = Auth::check();
+$showBranding = true;
+if ($loggedIn) {
+    $showBranding = Plan::config(PlanGate::currentPlan(Auth::id()))['branding'];
+}
 
 $pageTitle = 'QR Generator';
 $activeNav = 'tools_qr';
@@ -28,14 +34,21 @@ require __DIR__ . '/../includes/tool_header.php';
 
     <div id="qr-result" style="margin-top:24px;display:none;text-align:center">
         <div id="qr-canvas-wrap" style="background:#fff;display:inline-block;padding:16px;border-radius:var(--radius);border:1px solid var(--border)"></div>
+        <div id="qr-caption" style="margin-top:6px;font-size:11px;color:var(--text-muted)"></div>
         <div style="margin-top:12px">
             <a href="#" id="qr-download" class="btn btn-secondary" download="qr-code.png">Download PNG</a>
         </div>
     </div>
 </div>
 
+<?php if ($loggedIn && $showBranding): ?>
+    <p style="color:var(--text-muted);font-size:13px;max-width:420px">Downloaded QR codes include a small "Powered by" watermark on the free plan. <a href="/billing.php">Upgrade</a> to remove it.</p>
+<?php endif; ?>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
 <script>
+const QR_SHOW_BRANDING = <?= $showBranding ? 'true' : 'false' ?>;
+
 document.getElementById('qr-generate').addEventListener('click', async () => {
     const value = document.getElementById('qr-input').value.trim();
     if (!value) return;
@@ -55,7 +68,34 @@ document.getElementById('qr-generate').addEventListener('click', async () => {
 
     const wrap = document.getElementById('qr-canvas-wrap');
     wrap.innerHTML = '<img src="' + dataUrl + '" width="220" height="220" alt="QR code">';
-    document.getElementById('qr-download').href = dataUrl;
+
+    const caption = document.getElementById('qr-caption');
+    caption.textContent = QR_SHOW_BRANDING ? 'Powered by Email Bot' : '';
+
+    if (QR_SHOW_BRANDING) {
+        // Stamp the watermark into the downloaded PNG itself, not just the on-screen caption,
+        // so the branding travels with the file once it's downloaded.
+        const canvas = document.createElement('canvas');
+        const img = new Image();
+        img.onload = () => {
+            const pad = 22;
+            canvas.width = img.width;
+            canvas.height = img.height + pad;
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(img, 0, 0);
+            ctx.fillStyle = '#656d76';
+            ctx.font = '12px Inter, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('Powered by Email Bot', canvas.width / 2, canvas.height - 6);
+            document.getElementById('qr-download').href = canvas.toDataURL('image/png');
+        };
+        img.src = dataUrl;
+    } else {
+        document.getElementById('qr-download').href = dataUrl;
+    }
+
     document.getElementById('qr-result').style.display = 'block';
 });
 

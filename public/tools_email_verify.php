@@ -3,19 +3,25 @@ require __DIR__ . '/../includes/bootstrap.php';
 
 use App\Auth;
 use App\TrialGate;
+use App\PlanGate;
 
 $loggedIn = Auth::check();
 $results = [];
 $showPaywall = false;
+$limitMessage = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (!TrialGate::check('verify')) {
-        $showPaywall = true;
-    } else {
-        $raw = $_POST['emails'] ?? '';
-        $lines = array_filter(array_map('trim', preg_split('/[\r\n,]+/', $raw)));
+    $raw = $_POST['emails'] ?? '';
+    $lines = array_filter(array_map('trim', preg_split('/[\r\n,]+/', $raw)));
+    $lines = array_unique($lines);
 
-        foreach (array_unique($lines) as $email) {
+    if (!$loggedIn && !TrialGate::check('verify')) {
+        $showPaywall = true;
+    } elseif ($loggedIn && !PlanGate::canRunVerifierChecks(Auth::id(), count($lines))) {
+        $remaining = PlanGate::verifierChecksRemaining(Auth::id());
+        $limitMessage = "Checking " . count($lines) . " emails would exceed your plan's monthly verifier limit (you have $remaining left this month). Upgrade on the Billing page to check more.";
+    } else {
+        foreach ($lines as $email) {
             $validSyntax = filter_var($email, FILTER_VALIDATE_EMAIL) !== false;
             $hasMx = false;
 
@@ -29,6 +35,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'valid' => $validSyntax && $hasMx,
                 'reason' => !$validSyntax ? 'Invalid format' : (!$hasMx ? 'Domain has no mail server' : 'Looks valid'),
             ];
+        }
+
+        if ($loggedIn) {
+            PlanGate::recordVerifierChecks(Auth::id(), count($results));
         }
     }
 }
@@ -48,6 +58,9 @@ require __DIR__ . '/../includes/tool_header.php';
 ?>
 <?php if (!$loggedIn): ?>
     <p style="color:var(--text-muted);font-size:13px">Free to try <strong class="mono"><?= TrialGate::usesLeft('verify') ?></strong> more time(s) without an account.</p>
+<?php endif; ?>
+<?php if ($limitMessage): ?>
+    <div class="alert alert-error"><?= htmlspecialchars($limitMessage) ?></div>
 <?php endif; ?>
 
 <form method="POST" class="tool-panel" style="max-width:520px">

@@ -4,6 +4,7 @@ require __DIR__ . '/../includes/bootstrap.php';
 use App\Auth;
 use App\ShortLink;
 use App\TrialGate;
+use App\CustomDomain;
 
 $loggedIn = Auth::check();
 $userId = Auth::id();
@@ -12,6 +13,16 @@ $message = '';
 $messageType = 'success';
 $showPaywall = false;
 $appUrl = rtrim($_ENV['APP_URL'] ?? '', '/');
+
+// If the user has a verified custom domain set active, show links under that
+// domain instead of the app's own — this is the branding-removal upgrade.
+$displayHost = $appUrl;
+if ($loggedIn) {
+    $activeDomain = CustomDomain::activeDomainFor($userId);
+    if ($activeDomain) {
+        $displayHost = 'https://' . $activeDomain;
+    }
+}
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!TrialGate::check('shortener')) {
@@ -22,7 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $result = ShortLink::create($userId, $url, $customSlug);
 
         if ($result['success']) {
-            $shortUrl = $appUrl . '/' . $result['slug'];
+            $shortUrl = $displayHost . '/' . $result['slug'];
             $message = "Short link created: $shortUrl";
         } else {
             $message = $result['error'];
@@ -48,6 +59,10 @@ require __DIR__ . '/../includes/tool_header.php';
     <p style="color:var(--text-muted);font-size:13px">Free to try <strong class="mono"><?= TrialGate::usesLeft('shortener') ?></strong> more time(s) without an account. <a href="/register.php">Sign in</a> to see click history and manage your links.</p>
 <?php endif; ?>
 
+<?php if ($loggedIn && !$activeDomain): ?>
+    <p style="color:var(--text-muted);font-size:13px">Links currently show under <?= htmlspecialchars($appUrl) ?>. <a href="/domains.php">Use your own domain</a> on the Growth plan or higher.</p>
+<?php endif; ?>
+
 <?php if ($message): ?>
     <div class="alert alert-<?= $messageType ?>"><?= htmlspecialchars($message) ?></div>
 <?php endif; ?>
@@ -58,7 +73,7 @@ require __DIR__ . '/../includes/tool_header.php';
 
     <label>Custom name <span style="color:var(--text-muted);font-weight:400">(optional — letters, numbers, - or _, 3-20 characters)</span></label>
     <div style="display:flex;align-items:center;gap:0;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden">
-        <span class="mono" style="padding:8px 10px;background:var(--surface);color:var(--text-muted);font-size:13px;border-right:1px solid var(--border);white-space:nowrap"><?= htmlspecialchars($appUrl ?: 'yourapp.up.railway.app') ?>/</span>
+        <span class="mono" style="padding:8px 10px;background:var(--surface);color:var(--text-muted);font-size:13px;border-right:1px solid var(--border);white-space:nowrap"><?= htmlspecialchars($displayHost ?: 'yourapp.up.railway.app') ?>/</span>
         <input type="text" name="custom_slug" placeholder="summer-sale" style="border:none;border-radius:0">
     </div>
 
@@ -78,7 +93,7 @@ require __DIR__ . '/../includes/tool_header.php';
             <tbody>
             <?php foreach ($links as $link): ?>
                 <tr>
-                    <td class="mono"><a href="/<?= htmlspecialchars($link['slug']) ?>" target="_blank"><?= htmlspecialchars($appUrl . '/' . $link['slug']) ?></a></td>
+                    <td class="mono"><a href="/<?= htmlspecialchars($link['slug']) ?>" target="_blank"><?= htmlspecialchars($displayHost . '/' . $link['slug']) ?></a></td>
                     <td style="max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"><?= htmlspecialchars($link['target_url']) ?></td>
                     <td class="mono"><?= $link['clicks'] ?></td>
                     <td style="color:var(--text-muted)"><?= date('M j, Y', strtotime($link['created_at'])) ?></td>
