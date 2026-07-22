@@ -12,7 +12,11 @@
 </head>
 <body>
 <div class="app-shell">
-    <nav class="sidebar">
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    <nav class="sidebar" id="sidebar">
+        <button type="button" class="sidebar-close" id="sidebarClose" aria-label="Close menu">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
         <a href="/dashboard.php" class="brand-mark" title="Email Bot">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
                 <rect width="24" height="24" rx="6" fill="#C9A227"/>
@@ -43,6 +47,9 @@
     </nav>
     <div class="content-col">
         <header class="topbar">
+            <button type="button" class="icon-btn menu-trigger" id="menuTrigger" title="Menu" aria-label="Open menu" aria-expanded="false" aria-controls="sidebar">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg>
+            </button>
             <form action="/search.php" method="GET" class="topbar-search">
                 <input type="text" name="q" placeholder="Search campaigns, contacts, tools...">
             </form>
