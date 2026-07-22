@@ -45,6 +45,9 @@ if (Auth::check()) {
     </script>
 
     <link rel="stylesheet" href="/assets/style.css">
+    <?php if (\App\Ads::enabledForCurrentUser()): ?>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=<?= htmlspecialchars(\App\Ads::clientId()) ?>" crossorigin="anonymous"></script>
+    <?php endif; ?>
 </head>
 <body class="landing">
 
