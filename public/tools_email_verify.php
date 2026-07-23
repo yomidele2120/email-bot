@@ -47,6 +47,7 @@ $validCount = count(array_filter($results, fn($r) => $r['valid']));
 
 $pageTitle = 'Email Verifier';
 $activeNav = 'tools_verify';
+$allowAds = true;
 require __DIR__ . '/../includes/' . ($loggedIn ? 'header.php' : 'public_header.php');
 ?>
 

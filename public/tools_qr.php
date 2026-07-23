@@ -14,6 +14,7 @@ if ($loggedIn) {
 
 $pageTitle = 'QR Generator';
 $activeNav = 'tools_qr';
+$allowAds = true;
 require __DIR__ . '/../includes/' . ($loggedIn ? 'header.php' : 'public_header.php');
 ?>
 

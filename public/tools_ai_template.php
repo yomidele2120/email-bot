@@ -87,6 +87,7 @@ PROMPT;
 
 $pageTitle = 'AI Template Generator';
 $activeNav = 'new_campaign';
+$allowAds = true;
 require __DIR__ . '/../includes/header.php';
 ?>
 

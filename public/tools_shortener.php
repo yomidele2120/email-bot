@@ -46,6 +46,7 @@ $links = $loggedIn ? ShortLink::allForUser($userId) : [];
 
 $pageTitle = 'URL Shortener';
 $activeNav = 'tools_shortener';
+$allowAds = true;
 require __DIR__ . '/../includes/' . ($loggedIn ? 'header.php' : 'public_header.php');
 ?>
 

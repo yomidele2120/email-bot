@@ -35,6 +35,7 @@ $invalid = array_filter($allStmt->fetchAll(), fn($c) => !filter_var($c['email'],
 
 $pageTitle = 'Contact Cleanup';
 $activeNav = 'tools_clean';
+$allowAds = true;
 require __DIR__ . '/../includes/header.php';
 ?>
 

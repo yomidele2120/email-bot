@@ -83,6 +83,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_FILES['archive']['tmp_name
 
 $pageTitle = 'Archive Converter';
 $activeNav = 'tools_archive';
+$allowAds = true;
 require __DIR__ . '/../includes/' . ($loggedIn ? 'header.php' : 'public_header.php');
 ?>
 

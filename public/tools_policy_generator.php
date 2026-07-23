@@ -140,6 +140,7 @@ DOC;
 
 $pageTitle = 'Policy Generator';
 $activeNav = 'tools_policy';
+$allowAds = true;
 require __DIR__ . '/../includes/' . ($loggedIn ? 'header.php' : 'public_header.php');
 ?>
 

@@ -46,6 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_FILES['upload']['tmp_name'
 
 $pageTitle = 'Share Files';
 $activeNav = 'tools_share';
+$allowAds = true;
 require __DIR__ . '/../includes/' . ($loggedIn ? 'header.php' : 'public_header.php');
 ?>
 

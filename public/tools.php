@@ -7,6 +7,7 @@ $loggedIn = Auth::check();
 
 $pageTitle = 'Tools';
 $activeNav = 'tools';
+$allowAds = true;
 require __DIR__ . '/../includes/' . ($loggedIn ? 'header.php' : 'public_header.php');
 ?>
 

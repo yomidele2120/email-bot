@@ -5,6 +5,7 @@ use App\Auth;
 
 $loggedIn = Auth::check();
 $pageTitle = 'Terms of Service';
+$allowAds = true;
 require __DIR__ . '/../includes/' . ($loggedIn ? 'header.php' : 'public_header.php');
 ?>
 

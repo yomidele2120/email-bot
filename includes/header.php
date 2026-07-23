@@ -9,7 +9,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= isset($pageTitle) ? htmlspecialchars($pageTitle) . ' — ' : '' ?>Email Bot</title>
     <link rel="stylesheet" href="/assets/style.css">
-    <?php if (\App\Ads::enabledForCurrentUser()): ?>
+    <?php if (!empty($allowAds) && \App\Ads::enabledForCurrentUser()): ?>
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=<?= htmlspecialchars(\App\Ads::clientId()) ?>" crossorigin="anonymous"></script>
     <?php endif; ?>
 </head>
