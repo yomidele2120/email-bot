@@ -88,6 +88,32 @@ class Plan
     }
 
     /**
+     * The Paystack Plan code for this tier (created once on your Paystack
+     * dashboard/API, then pasted into env). Subscriptions require a real
+     * Paystack Plan object — this is not the same as the Naira price above.
+     */
+    public static function paystackPlanCode(string $tier): ?string
+    {
+        $map = [
+            'starter' => $_ENV['PAYSTACK_PLAN_STARTER'] ?? null,
+            'growth' => $_ENV['PAYSTACK_PLAN_GROWTH'] ?? null,
+            'agency' => $_ENV['PAYSTACK_PLAN_AGENCY'] ?? null,
+        ];
+        return $map[$tier] ?? null;
+    }
+
+    /** Reverse lookup: given a Paystack plan_code from a webhook payload, which tier is it? */
+    public static function tierForPaystackPlanCode(string $planCode): ?string
+    {
+        foreach (self::paidTiersOrdered() as $tier) {
+            if (self::paystackPlanCode($tier) === $planCode) {
+                return $tier;
+            }
+        }
+        return null;
+    }
+
+    /**
      * The user's *effective* plan: falls back to 'free' if a paid plan lapsed
      * (plan_expires_at in the past).
      */

@@ -26,6 +26,12 @@ if (!Paystack::isConfigured()) {
     exit;
 }
 
+$planCode = Plan::paystackPlanCode($plan);
+if (!$planCode) {
+    header('Location: /billing.php?flash=' . urlencode("The $plan plan isn't set up on Paystack yet — add its Plan code to your environment variables.") . '&type=error');
+    exit;
+}
+
 $pdo = Database::connect();
 $stmt = $pdo->prepare("SELECT email FROM users WHERE id = :id");
 $stmt->execute([':id' => $userId]);
@@ -42,7 +48,7 @@ $pdo->prepare(
 
 $callbackUrl = rtrim($_ENV['APP_URL'] ?? '', '/') . '/billing_callback.php';
 
-$result = Paystack::initializeTransaction($userEmail, $amountKobo, $reference, $callbackUrl, [
+$result = Paystack::initializeSubscriptionTransaction($userEmail, $planCode, $amountKobo, $reference, $callbackUrl, [
     'user_id' => $userId,
     'plan' => $plan,
 ]);

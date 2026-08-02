@@ -45,6 +45,9 @@ if (!$verifiedOk) {
 }
 
 // Grant 30 days of access, stacking on top of any remaining time on the same plan.
+// This is for immediate UX only — the webhook (paystack_webhook.php) is the real
+// source of truth for renewals, since Paystack charges those automatically on
+// schedule without the user ever visiting this callback page again.
 $stmt = $pdo->prepare("SELECT plan, plan_expires_at FROM users WHERE id = :id");
 $stmt->execute([':id' => $userId]);
 $user = $stmt->fetch();
@@ -54,11 +57,13 @@ $currentExpiry = $user['plan_expires_at'] ? strtotime($user['plan_expires_at']) 
 $baseTime = ($user['plan'] === $payment['plan'] && $currentExpiry > $now) ? $currentExpiry : $now;
 $newExpiry = date('Y-m-d H:i:s', $baseTime + (30 * 86400));
 
-$pdo->prepare("UPDATE users SET plan = :plan, plan_expires_at = :exp WHERE id = :id")
-    ->execute([':plan' => $payment['plan'], ':exp' => $newExpiry, ':id' => $userId]);
+$customerCode = $verification['data']['customer']['customer_code'] ?? null;
+
+$pdo->prepare("UPDATE users SET plan = :plan, plan_expires_at = :exp, paystack_customer_code = COALESCE(:cc, paystack_customer_code) WHERE id = :id")
+    ->execute([':plan' => $payment['plan'], ':exp' => $newExpiry, ':cc' => $customerCode, ':id' => $userId]);
 
 $pdo->prepare("UPDATE payments SET status = 'success', paystack_response = :resp WHERE id = :id")
     ->execute([':resp' => json_encode($verification), ':id' => $payment['id']]);
 
-header('Location: /billing.php?flash=' . urlencode('Payment successful — your plan has been upgraded.') . '&type=success');
+header('Location: /billing.php?flash=' . urlencode('Payment successful — your subscription is active. It will renew automatically each month.') . '&type=success');
 exit;

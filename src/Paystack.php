@@ -58,9 +58,58 @@ class Paystack
         ]);
     }
 
+    /**
+     * Starts a transaction tied to a Paystack Plan (recurring). Paystack uses
+     * the plan's own amount/interval and automatically creates a subscription
+     * once this first charge succeeds — future renewals are charged by
+     * Paystack itself on schedule, not by this app. We still pass amountKobo
+     * so the charge amount matches even if the plan drifts, and so our own
+     * `payments` log has a real figure without a second API call.
+     */
+    public static function initializeSubscriptionTransaction(string $email, string $planCode, int $amountKobo, string $reference, string $callbackUrl, array $metadata = []): array
+    {
+        return self::request('POST', '/transaction/initialize', [
+            'email' => $email,
+            'amount' => $amountKobo,
+            'plan' => $planCode,
+            'currency' => 'NGN',
+            'reference' => $reference,
+            'callback_url' => $callbackUrl,
+            'metadata' => $metadata,
+        ]);
+    }
+
     /** Confirms a transaction actually succeeded. Call this before granting access. */
     public static function verifyTransaction(string $reference): array
     {
         return self::request('GET', '/transaction/verify/' . rawurlencode($reference));
+    }
+
+    /** Cancels a recurring subscription. Both values come from what the subscription.create webhook stored. */
+    public static function disableSubscription(string $subscriptionCode, string $emailToken): array
+    {
+        return self::request('POST', '/subscription/disable', [
+            'code' => $subscriptionCode,
+            'token' => $emailToken,
+        ]);
+    }
+
+    public static function fetchSubscription(string $subscriptionCode): array
+    {
+        return self::request('GET', '/subscription/' . rawurlencode($subscriptionCode));
+    }
+
+    /**
+     * Verifies a webhook actually came from Paystack, not a spoofed request.
+     * Paystack signs the raw request body with your secret key (HMAC SHA512)
+     * and sends it in the x-paystack-signature header.
+     */
+    public static function verifyWebhookSignature(string $rawBody, ?string $signatureHeader): bool
+    {
+        if (!$signatureHeader || !self::isConfigured()) {
+            return false;
+        }
+        $expected = hash_hmac('sha512', $rawBody, self::secretKey());
+        return hash_equals($expected, $signatureHeader);
     }
 }
