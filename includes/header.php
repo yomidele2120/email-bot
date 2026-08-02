@@ -7,7 +7,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="google-site-verification" content="ovfu6mw2R72pShX4rQxwSjcPnWBQ3nHPmCuqEdka7VU" />
+    <meta name="google-site-verification" content="-eXCqkpo6R7nHQMFkhTMjj_xsviV65Hv06unhig34S8" />
+    <meta name="google-adsense-account" content="ca-pub-6552300898888939">
     <title><?= isset($pageTitle) ? htmlspecialchars($pageTitle) . ' — ' : '' ?>Email Bot</title>
     <link rel="stylesheet" href="/assets/style.css">
     <?php if (!empty($allowAds) && \App\Ads::enabledForCurrentUser()): ?>

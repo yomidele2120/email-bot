@@ -13,7 +13,8 @@ if (Auth::check()) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="google-site-verification" content="ovfu6mw2R72pShX4rQxwSjcPnWBQ3nHPmCuqEdka7VU" />
+    <meta name="google-site-verification" content="-eXCqkpo6R7nHQMFkhTMjj_xsviV65Hv06unhig34S8" />
+    <meta name="google-adsense-account" content="ca-pub-6552300898888939">
     <title>Email Bot — Email Campaigns, QR Codes, URL Shortener & File Tools</title>
     <meta name="description" content="Send personalized email campaigns with built-in unsubscribe compliance, plus free tools: QR code generator, URL shortener, email list verifier, archive/ZIP converter, and file sharing. Most tools work without an account.">
     <meta name="keywords" content="email marketing automation, bulk email sender, email campaign tool, QR code generator, URL shortener, email verifier, ZIP converter, TAR to ZIP, file sharing tool, unsubscribe link generator">

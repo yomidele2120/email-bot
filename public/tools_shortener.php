@@ -74,7 +74,7 @@ require __DIR__ . '/../includes/tool_header.php';
 
     <label>Custom name <span style="color:var(--text-muted);font-weight:400">(optional — letters, numbers, - or _, 3-20 characters)</span></label>
     <div style="display:flex;align-items:center;gap:0;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden">
-        <span class="mono" style="padding:8px 10px;background:var(--surface);color:var(--text-muted);font-size:13px;border-right:1px solid var(--border);white-space:nowrap"><?= htmlspecialchars($displayHost ?: 'yourapp.up.railway.app') ?>/</span>
+        <span class="mono" style="padding:8px 10px;background:var(--surface);color:var(--text-muted);font-size:13px;border-right:1px solid var(--border);white-space:nowrap"><?= htmlspecialchars($displayHost ?: 'www.reachkit.site') ?>/</span>
         <input type="text" name="custom_slug" placeholder="summer-sale" style="border:none;border-radius:0">
     </div>
 
